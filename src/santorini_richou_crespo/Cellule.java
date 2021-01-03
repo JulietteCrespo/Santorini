@@ -13,6 +13,7 @@ public class Cellule {
 
     Etage etageCourant;
     Ouvrier ouvrierCourant;
+    
 
     public Cellule() {
         etageCourant = new Etage(0);

@@ -21,9 +21,21 @@ public class FenetreDeJeu extends javax.swing.JFrame {
     Joueur[] ListesJoueur = new Joueur[2];
     Joueur joueurCourant;
     Grille newGrille = new Grille();
-    Cellule cellulechoisi;
-    boolean suivant;
-  
+    boolean premierClic;
+    boolean deuxiemeClic;
+    boolean troisiemeClic;
+    int xlast;
+    int ylast;
+    int X;
+    int Y;
+    int Xcons;
+    int Ycons;
+    boolean bloqB1;
+    boolean bloqB2;
+    boolean bloqG1;
+    boolean bloqG2;
+    boolean fin;
+
     public FenetreDeJeu() {
         initComponents();
         ImageIcon img = new javax.swing.ImageIcon(getClass().getResource("/images/sa.png"));
@@ -36,40 +48,84 @@ public class FenetreDeJeu extends javax.swing.JFrame {
         jPanel3.setVisible(false);
         jPanel2.setVisible(false);
         jPanel1.setVisible(false);
+
+        premierClic = true;
+        deuxiemeClic = true;
+        troisiemeClic = true;
+        bloqB1 = false;
+        bloqB2 = false;
+        bloqG1 = false;
+        bloqG2 = false;
+        fin = false;
         text.setText("  Quel ouvrier veut tu bouger ?");
-        suivant = false;
         for (int i = 4; i >= 0; i--) {
             for (int j = 0; j < 5; j++) {
                 CelluleGraphique cellGraph = new CelluleGraphique(newGrille.grille[i][j]);
+                cellGraph.Xc = i;
+                cellGraph.Yc = j;
+
                 cellGraph.addActionListener(new java.awt.event.ActionListener() {
                     public void actionPerformed(java.awt.event.ActionEvent evt) {
                         Cellule c = cellGraph.CelluleAssociee;
-                        cellulechoisi = c;
-                        suivant = true;
-                        
+
+                        if (newGrille.etrePerdantPourJoueur(joueurCourant) == true) {
+                            text.setText(joueurCourant.nom + "Vous avez perdu vous ne pouvez plus bouger");
+                            deuxiemeClic = false;
+                            troisiemeClic = false;
+                            premierClic = false;
+                        } else {
+                            if (premierClic == true) {
+                                xlast = cellGraph.Xc;
+                                ylast = cellGraph.Yc;
+                                if ("B".equals(c.ouvrierCourant.couleur) && "Zeus".equals(joueurCourant.typePersonnage) || "G".equals(c.ouvrierCourant.couleur) && "Arthemis".equals(joueurCourant.typePersonnage)) {
+                                    premierClic = false;
+                                    joueurCourant.ouvrierCourant = c.ouvrierCourant;
+                                    text.setText(" Ok, où voulez vous aller ? ");
+                                } else {
+                                    text.setText("Erreur : saisir un ouvrier ");
+                                }
+
+                            } else if (deuxiemeClic == true) {
+                                X = cellGraph.Xc;
+                                Y = cellGraph.Yc;
+                                if (newGrille.DeplacementPossible(xlast, ylast, X, Y) == true) {
+                                    newGrille.grille[X][Y].ouvrierCourant = newGrille.grille[xlast][ylast].ouvrierCourant;
+                                    newGrille.grille[xlast][ylast].ouvrierCourant = null;
+                                    joueurCourant.ouvrierCourant.Xouvrier = X;
+                                    joueurCourant.ouvrierCourant.Youvrier = Y;
+                                    text.setText("Ok, maintenant où voulez vous construire ?");
+                                    deuxiemeClic = false;
+                                } else if (newGrille.unOuvrierNePeutPlusBouger(xlast, ylast) == true) {
+
+                                    premierClic = true;
+                                    text.setText(" Votre Ouvirier est bloquer vous ne pouvez plus bouger, vous devez choisir un autre ouvrier  ");
+                                } else {
+                                    text.setText(" Vous ne pouvez pas aller la  ");
+                                }
+                            } else if (newGrille.grille[X][Y].etageCourant.niveauEtage == 3 && troisiemeClic == true) {
+                                text.setText(" Victoire de " + joueurCourant.nom);
+                                troisiemeClic = false;
+                            } else if (troisiemeClic == true) {
+                                Xcons = cellGraph.Xc;
+                                Ycons = cellGraph.Yc;
+                                if (newGrille.AjouterEtagePossible(X, Y, Xcons, Ycons) == true && newGrille.grille[Xcons][Ycons].ouvrierCourant == null) {
+                                    newGrille.grille[Xcons][Ycons].etageCourant.niveauEtage++;
+                                    troisiemeClic = false;
+                                    text.setText(" Ok etage construit ");
+                                    joueurSuivant();
+                                } else {
+                                    text.setText(" Vous ne pouvez pas construire ici ");
+                                }
+                            }
+                        }
+
                     }
                 });
                 panelGrille.add(cellGraph);
             }
 
         }
-        
-        
-        // commence a jouer
-        
-        /*
-        if (cellulechoisi != null) {
 
-            Cellule c1 = cellGraph.CelluleAssociee;
-            if (c1.presenceOuvrier() == false && c1.etageCourant.niveauEtage - c.etageCourant.niveauEtage == 1) {
-                text.setText(" Déplacement Ok ");
-            } else if (c1.presenceOuvrier() == false && c1.etageCourant.niveauEtage - c.etageCourant.niveauEtage <= 0) {
-                text.setText(" Déplacement Ok ");
-            } else {
-                text.setText(" faux nous ne pouver pas aller la ");
-            }
-
-        }*/
     }
 
     /**
@@ -231,8 +287,8 @@ public class FenetreDeJeu extends javax.swing.JFrame {
         initialiserPartie();
         panelGrille.repaint();
         jButton1.setEnabled(false);
-        jouer();
-        
+
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
@@ -270,25 +326,6 @@ public class FenetreDeJeu extends javax.swing.JFrame {
         });
     }
 
-    public void jouer() {
-      if (suivant==true){
-        if (cellulechoisi.ouvrierCourant == null ) { 
-            text.setText(" la casse est vide ");
-        } else if ("B".equals(cellulechoisi.ouvrierCourant.couleur) && "Zeus".equals(joueurCourant.typePersonnage)) {
-            text.setText(" Ok, où veut tu allée ? ");
-            joueurCourant.ouvrierCourant = cellulechoisi.ouvrierCourant;
-      } else if ("G".equals(cellulechoisi.ouvrierCourant.couleur) && "Arthemis".equals(joueurCourant.typePersonnage) ) {
-            text.setText(" Ok, où veut tu allée ? ");
-            joueurCourant.ouvrierCourant = cellulechoisi.ouvrierCourant;
-
-        } else if ("B".equals(cellulechoisi.ouvrierCourant.couleur) && "Arthemis".equals(joueurCourant.typePersonnage)) {
-            text.setText(" Ce n'est pas un de vos ouvriers ");
-
-        } else if ("G".equals(cellulechoisi.ouvrierCourant.couleur) && "Zeus".equals(joueurCourant.typePersonnage)) {
-            text.setText(" Ce n'est pas un de vos ouvriers ");
-        }
-      }
-    }
     public void joueurSuivant() {
         if (joueurCourant == ListesJoueur[0]) {
             joueurCourant = ListesJoueur[1];
@@ -296,6 +333,11 @@ public class FenetreDeJeu extends javax.swing.JFrame {
             joueurCourant = ListesJoueur[0];
         }
         joueurcourant.setText(joueurCourant.nom);
+
+        premierClic = true;
+        deuxiemeClic = true;
+        troisiemeClic = true;
+        text.setText("  Quel ouvrier veut tu bouger ?");
     }
 
     public Grille initialiserPartie() {

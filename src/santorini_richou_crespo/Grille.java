@@ -21,14 +21,50 @@ public class Grille {
         }
     }
 
-    public boolean AjouterEtagePossible(int ligne, int colonne) {
-        if (grille[ligne][colonne].etageCourant.niveauEtage == 4) {
+    public boolean AjouterEtagePossible(int x, int y, int x1, int y1) {
+        if (grille[x][y].etageCourant.niveauEtage == 4) {
             System.out.print("etage max");
             return false;
         } else {
-            //grille[ligne][colonne].etageCourant.niveauEtage++;
-            return true;
-        }
+
+            //Centre 
+            if (x1 == x && y1 == y && grille[x1][y1].presenceOuvrier() == false) {
+                return false;
+            }
+            else if (x1 == x+1 && y1 == y && grille[x1][y1].presenceOuvrier() == false) {
+                return true;
+            }
+            else if (x1 == x && y1 == y +1 && grille[x1][y1].presenceOuvrier() == false){
+
+                return true;
+            }
+            else if (x1 == x+1 && y1 == y+1 && grille[x1][y1].presenceOuvrier() == false) {
+
+                return true;
+            }
+            else if (x1 == x+1 && y1 == y-1 && grille[x1][y1].presenceOuvrier() == false) {
+
+                return true;
+            }
+            else if (x1 == x-1 && y1 == y+1 && grille[x1][y1].presenceOuvrier() == false) {
+
+                return true;
+            }
+            else if (x1 == x-1 && y1 == y-1 && grille[x1][y1].presenceOuvrier() == false) {
+
+                return true;
+            }
+            else if (x1 == x && y1 == y-1 && grille[x1][y1].presenceOuvrier() == false) {
+
+                return true;
+
+            } if (x1 == x-1 && y1 == y && grille[x1][y1].presenceOuvrier() == false){
+                return true;
+            }
+
+        } 
+        return false;//grille[ligne][colonne].etageCourant.niveauEtage++;
+
     }
 
     public boolean DeplacementPossible(int x1, int y1, int x2, int y2) {
@@ -58,7 +94,7 @@ public class Grille {
             }
             // Conne 1 
             if (y1 == 0) {
-                if (x1 == 1 || x1 == 2 || x1==3) {
+                if (x1 == 1 || x1 == 2 || x1 == 3) {
                     if (x2 == x1 - 1 && y2 == y1 && grille[x2][y2].presenceOuvrier() == false) {
                         if (a == 1 || a <= 0) {
                             return true;
@@ -112,7 +148,7 @@ public class Grille {
             }
             // Ligne 1 
             if (x1 == 0) {
-                if (y1 == 1 || y1 == 2 || y1==3) {
+                if (y1 == 1 || y1 == 2 || y1 == 3) {
                     if (y2 == y1 - 1 && x2 == x1 && grille[x2][y2].presenceOuvrier() == false) {
                         if (a == 1 || a <= 0) {
                             return true;
@@ -185,7 +221,7 @@ public class Grille {
             }
             // Ligne 4 
             if (x1 == 4) {
-                if (y1 == 1 || y1 == 2 || y1==3) {
+                if (y1 == 1 || y1 == 2 || y1 == 3) {
                     if (y2 == y1 - 1 && x2 == x1 && grille[x2][y2].presenceOuvrier() == false) {
                         if (a == 1 || a <= 0) {
                             return true;
@@ -219,7 +255,7 @@ public class Grille {
 
             // Conne 4 
             if (y1 == 4) {
-                if (x1 == 1 || x1 == 2 || x1==3) {
+                if (x1 == 1 || x1 == 2 || x1 == 3) {
                     if (y2 == y1 && x2 == x1 - 1 && grille[x2][y2].presenceOuvrier() == false) {
                         if (a == 1 || a <= 0) {
                             return true;
@@ -252,8 +288,8 @@ public class Grille {
             }
 
             //Centre 
-            if (y1 == 1 || y1 == 2 || y1==3) {
-                if (x1 == 1 || x1 == 2 || x1==3) {
+            if (y1 == 1 || y1 == 2 || y1 == 3) {
+                if (x1 == 1 || x1 == 2 || x1 == 3) {
                     if (x2 == x1 + 1 && y2 == y1 && grille[x2][y2].presenceOuvrier() == false) {
                         if (a == 1 || a <= 0) {
                             return true;
@@ -349,36 +385,55 @@ public class Grille {
     }
 
     boolean etreGagnantePourJoueur(Joueur unJoueur) {
-        if (unJoueur.ListeOuvrier[0].niveauEtage == 3 || unJoueur.ListeOuvrier[1].niveauEtage == 3) {
-            return true;
+        for (int i=0;i<5;i++) {
+            for(int j=0;j<5;j++){
+                if (grille[i][j].etageCourant.niveauEtage==3 && grille[i][j].ouvrierCourant==unJoueur.ListeOuvrier[0] ){
+                   return true;
+                }
+                else if (grille[i][j].etageCourant.niveauEtage==3 && grille[i][j].ouvrierCourant==unJoueur.ListeOuvrier[1]){
+                    return true;
+                }
+                else{
+                    return false;
+                }
+            }
         }
         return false;
+        
     }
 
     public boolean etrePerdantPourJoueur(Joueur unJoueur) {
         // un des deux ouvries dois pouvoir jouer
+        for (int j = 0; j < 5; j++) {
+            for (int i = 0; i < 5; i++) {
+                if (unJoueur.ListeOuvrier[0]==grille[i][j].ouvrierCourant){
+                    unJoueur.ListeOuvrier[0].Xouvrier=i;
+                    unJoueur.ListeOuvrier[0].Youvrier=j;
+                }
+            }
+        }
         int x = unJoueur.ListeOuvrier[0].Xouvrier;
         int y = unJoueur.ListeOuvrier[0].Youvrier;
-
+        int cont=0;
         // angle en haut a gauche
         if (x == 0 && y == 0) {
             if (DeplacementPossible(x, y, x + 1, y) == false) {
                 if (DeplacementPossible(x, y, x + 1, y + 1) == false) {
                     if (DeplacementPossible(x, y, x, y + 1) == false) {
-                        return true;
+                        cont++;
                     }
                 }
             }
         }
         // Conne 1 
         if (y == 0) {
-            if (x == 1 || x == 2|| x==3) {
+            if (x == 1 || x == 2 || x == 3) {
                 if (DeplacementPossible(x, y, x - 1, y) == false) {
                     if (DeplacementPossible(x, y, x - 1, y + 1) == false) {
                         if (DeplacementPossible(x, y, x, y + 1) == false) {
                             if (DeplacementPossible(x, y, x + 1, y) == false) {
                                 if (DeplacementPossible(x, y, x + 1, y + 1) == false) {
-                                    return true;
+                                    cont++;
                                 }
                             }
 
@@ -394,20 +449,20 @@ public class Grille {
             if (DeplacementPossible(x, y, x - 1, y) == false) {
                 if (DeplacementPossible(x, y, x - 1, y + 1) == false) {
                     if (DeplacementPossible(x, y, x, y + 1) == false) {
-                        return true;
+                        cont++;
                     }
                 }
             }
         }
         // Ligne 1 
         if (x == 0) {
-            if (y == 1 || y == 2|| y==3) {
+            if (y == 1 || y == 2 || y == 3) {
                 if (DeplacementPossible(x, y, x, y - 1) == false) {
                     if (DeplacementPossible(x, y, x + 1, y - 1) == false) {
                         if (DeplacementPossible(x, y, x + 1, y) == false) {
                             if (DeplacementPossible(x, y, x + 1, y + 1) == false) {
                                 if (DeplacementPossible(x, y, x, y + 1) == false) {
-                                    return true;
+                                    cont++;
                                 }
                             }
                         }
@@ -421,7 +476,7 @@ public class Grille {
             if (DeplacementPossible(x, y, x + 1, y) == false) {
                 if (DeplacementPossible(x, y, x + 1, y - 1) == false) {
                     if (DeplacementPossible(x, y, x + 1, y - 1) == false) {
-                        return true;
+                        cont++;
                     }
                 }
             }
@@ -432,20 +487,20 @@ public class Grille {
             if (DeplacementPossible(x, y, x - 1, y) == false) {
                 if (DeplacementPossible(x, y, x - 1, y - 1) == false) {
                     if (DeplacementPossible(x, y, x, y - 1) == false) {
-                        return true;
+                        cont++;
                     }
                 }
             }
         }
         // Ligne 4 
         if (x == 4) {
-            if (y == 1 || y == 2|| y==3) {
+            if (y == 1 || y == 2 || y == 3) {
                 if (DeplacementPossible(x, y, x, y - 1) == false) {
                     if (DeplacementPossible(x, y, x - 1, y - 1) == false) {
                         if (DeplacementPossible(x, y, x - 1, y) == false) {
                             if (DeplacementPossible(x, y, x - 1, y + 1) == false) {
                                 if (DeplacementPossible(x, y, x, y + 1) == false) {
-                                    return true;
+                                    cont++;
                                 }
                             }
                         }
@@ -457,13 +512,13 @@ public class Grille {
         }
         // Conne 4 
         if (y == 4) {
-            if (x == 1 || x == 2|| x== 3) {
+            if (x == 1 || x == 2 || x == 3) {
                 if (DeplacementPossible(x, y, x - 1, y) == false) {
                     if (DeplacementPossible(x, y, x - 1, y - 1) == false) {
                         if (DeplacementPossible(x, y, x, y - 1) == false) {
                             if (DeplacementPossible(x, y, x + 1, y - 1) == false) {
                                 if (DeplacementPossible(x, y, x + 1, y + 1) == false) {
-                                    return true;
+                                    cont++;
                                 }
                             }
                         }
@@ -475,8 +530,8 @@ public class Grille {
         }
 
         //Centre 
-        if (y == 1 || y == 2 || y==3) {
-            if (x == 1 || x == 2 ||x==3) {
+        if (y == 1 || y == 2 || y == 3) {
+            if (x == 1 || x == 2 || x == 3) {
                 if (DeplacementPossible(x, y, x + 1, y) == false) {
                     if (DeplacementPossible(x, y, x, y + 1) == false) {
                         if (DeplacementPossible(x, y, x + 1, y + 1) == false) {
@@ -485,7 +540,7 @@ public class Grille {
                                     if (DeplacementPossible(x, y, x - 1, y - 1) == false) {
                                         if (DeplacementPossible(x, y, x - 1, y + 1) == false) {
                                             if (DeplacementPossible(x, y, x + 1, y - 1) == false) {
-                                                return true;
+                                                cont++;
                                             }
                                         }
 
@@ -500,27 +555,34 @@ public class Grille {
 
             }
         }
-
+        for (int j = 0; j < 5; j++) {
+            for (int i = 0; i < 5; i++) {
+                if (unJoueur.ListeOuvrier[1]==grille[i][j].ouvrierCourant){
+                    unJoueur.ListeOuvrier[1].Xouvrier=i;
+                    unJoueur.ListeOuvrier[1].Youvrier=j;
+                }
+            }
+        }
         int x1 = unJoueur.ListeOuvrier[1].Xouvrier;
         int y1 = unJoueur.ListeOuvrier[1].Youvrier;
         if (x1 == 0 && y1 == 0) {
             if (DeplacementPossible(x1, y1, x1 + 1, y1) == false) {
                 if (DeplacementPossible(x1, y1, x1 + 1, y1 + 1) == false) {
                     if (DeplacementPossible(x1, y1, x1, y1 + 1) == false) {
-                        return true;
+                        cont++;
                     }
                 }
             }
         }
         // Conne 1 
         if (y1 == 0) {
-            if (x1 == 1 || x1 == 2 || x1==3) {
+            if (x1 == 1 || x1 == 2 || x1 == 3) {
                 if (DeplacementPossible(x1, y1, x1 - 1, y1) == false) {
                     if (DeplacementPossible(x1, y1, x1 - 1, y1 + 1) == false) {
                         if (DeplacementPossible(x1, y1, x1, y1 + 1) == false) {
                             if (DeplacementPossible(x1, y1, x1 + 1, y1) == false) {
                                 if (DeplacementPossible(x1, y1, x1 + 1, y1 + 1) == false) {
-                                    return true;
+                                    cont++;
                                 }
                             }
 
@@ -536,20 +598,20 @@ public class Grille {
             if (DeplacementPossible(x1, y1, x1 - 1, y1) == false) {
                 if (DeplacementPossible(x1, y1, x1 - 1, y1 + 1) == false) {
                     if (DeplacementPossible(x1, y1, x1, y + 1) == false) {
-                        return true;
+                        cont++;
                     }
                 }
             }
         }
         // Ligne 1 
         if (x1 == 0) {
-            if (y1 == 1 || y1 == 2|| y1==3) {
+            if (y1 == 1 || y1 == 2 || y1 == 3) {
                 if (DeplacementPossible(x1, y1, x1, y1 - 1) == false) {
                     if (DeplacementPossible(x1, y1, x1 + 1, y1 - 1) == false) {
                         if (DeplacementPossible(x1, y1, x1 + 1, y1) == false) {
                             if (DeplacementPossible(x1, y1, x1 + 1, y1 + 1) == false) {
                                 if (DeplacementPossible(x1, y1, x1, y1 + 1) == false) {
-                                    return true;
+                                    cont++;
                                 }
                             }
                         }
@@ -563,7 +625,7 @@ public class Grille {
             if (DeplacementPossible(x1, y1, x1 + 1, y1) == false) {
                 if (DeplacementPossible(x1, y1, x1 + 1, y1 - 1) == false) {
                     if (DeplacementPossible(x1, y1, x1 + 1, y1 - 1) == false) {
-                        return true;
+                        cont++;
                     }
                 }
             }
@@ -574,20 +636,20 @@ public class Grille {
             if (DeplacementPossible(x1, y1, x1 - 1, y1) == false) {
                 if (DeplacementPossible(x1, y1, x1 - 1, y1 - 1) == false) {
                     if (DeplacementPossible(x1, y1, x1, y1 - 1) == false) {
-                        return true;
+                        cont++;
                     }
                 }
             }
         }
         // Ligne 4 
         if (x1 == 4) {
-            if (y1 == 1 || y1 == 2|| y1==3) {
+            if (y1 == 1 || y1 == 2 || y1 == 3) {
                 if (DeplacementPossible(x1, y1, x1, y1 - 1) == false) {
                     if (DeplacementPossible(x1, y1, x1 - 1, y1 - 1) == false) {
                         if (DeplacementPossible(x1, y1, x1 - 1, y1) == false) {
                             if (DeplacementPossible(x1, y1, x1 - 1, y1 + 1) == false) {
                                 if (DeplacementPossible(x1, y1, x1, y1 + 1) == false) {
-                                    return true;
+                                    cont++;
                                 }
                             }
                         }
@@ -599,13 +661,13 @@ public class Grille {
         }
         // Conne 4 
         if (y1 == 4) {
-            if (x1 == 1 || x1 == 2|| x1==3) {
+            if (x1 == 1 || x1 == 2 || x1 == 3) {
                 if (DeplacementPossible(x1, y1, x1 - 1, y1) == false) {
                     if (DeplacementPossible(x1, y1, x1 - 1, y1 - 1) == false) {
                         if (DeplacementPossible(x1, y1, x1, y1 - 1) == false) {
                             if (DeplacementPossible(x1, y1, x1 + 1, y1 - 1) == false) {
                                 if (DeplacementPossible(x1, y1, x1 + 1, y1 + 1) == false) {
-                                    return true;
+                                    cont++;
                                 }
                             }
                         }
@@ -617,8 +679,8 @@ public class Grille {
         }
 
         //Centre 
-        if (y1 == 1 || y1 == 2 || y1==3) {
-            if (x1 == 1 || x1 == 2|| x1==3) {
+        if (y1 == 1 || y1 == 2 || y1 == 3) {
+            if (x1 == 1 || x1 == 2 || x1 == 3) {
                 if (DeplacementPossible(x1, y1, x1 + 1, y1) == false) {
                     if (DeplacementPossible(x1, y1, x1, y1 + 1) == false) {
                         if (DeplacementPossible(x1, y1, x1 + 1, y1 + 1) == false) {
@@ -627,8 +689,7 @@ public class Grille {
                                     if (DeplacementPossible(x1, y1, x1 - 1, y1 - 1) == false) {
                                         if (DeplacementPossible(x1, y1, x1 - 1, y1 + 1) == false) {
                                             if (DeplacementPossible(x1, y1, x1 + 1, y1 - 1) == false) {
-                                                return true;
-                                            }
+                                                cont++;
                                         }
 
                                     }
@@ -642,8 +703,14 @@ public class Grille {
 
             }
         }
-        return false;
+        if (cont==2){
+            return true;
+        }else{
+            return false;
+        }
 
+    }
+        return false;
     }
 
     public boolean EtageComplet(int x, int y) {
@@ -653,10 +720,8 @@ public class Grille {
         return false;
     }
 
-    public boolean possibleDeConstruire(Ouvrier unOuvrier) {
+    public boolean possibleDeConstruire(int x, int y) {
         // un des deux ouvries dois pouvoir jouer
-        int x = unOuvrier.Xouvrier;
-        int y = unOuvrier.Youvrier;
 
         // angle en haut a gauche
         if (x == 0 && y == 0) {
@@ -677,7 +742,7 @@ public class Grille {
         }
         // Conne 1 
         if (y == 0) {
-            if (x == 1 || x == 2|| x==3) {
+            if (x == 1 || x == 2 || x == 3) {
                 if (EtageComplet(x - 1, y) == false && grille[x][y].presenceOuvrier() == false) {
 
                     return true;
@@ -724,7 +789,7 @@ public class Grille {
         }
         // Ligne 1 
         if (x == 0) {
-            if (y == 1 || y == 2|| y==3) {
+            if (y == 1 || y == 2 || y == 3) {
                 if (EtageComplet(x, y - 1) == false && grille[x][y].presenceOuvrier() == false) {
 
                     return true;
@@ -789,7 +854,7 @@ public class Grille {
         }
         // Ligne 4 
         if (x == 4) {
-            if (y == 1 || y == 2 || y==3) {
+            if (y == 1 || y == 2 || y == 3) {
                 if (EtageComplet(x, y - 1) == false && grille[x][y].presenceOuvrier() == false) {
 
                     return true;
@@ -818,7 +883,7 @@ public class Grille {
 
         // Conne 4 
         if (y == 4) {
-            if (x == 1 || x == 2|| x==  3) {
+            if (x == 1 || x == 2 || x == 3) {
                 if (EtageComplet(x, y - 1) == false && grille[x][y].presenceOuvrier() == false) {
 
                     return true;
@@ -847,8 +912,8 @@ public class Grille {
         }
 
         //Centre 
-        if (y == 1 || y == 2 || y==3) {
-            if (x == 1 || x == 2 || x==3) {
+        if (y == 1 || y == 2 || y == 3) {
+            if (x == 1 || x == 2 || x == 3) {
                 if (EtageComplet(x + 1, y) == false && grille[x][y].presenceOuvrier() == false) {
 
                     return true;
@@ -891,4 +956,158 @@ public class Grille {
         return false;
     }
 
+    public boolean unOuvrierNePeutPlusBouger(int x,int y) {
+        
+        // angle en haut a gauche
+        if (x == 0 && y == 0) {
+            if (DeplacementPossible(x, y, x + 1, y) == false) {
+                if (DeplacementPossible(x, y, x + 1, y + 1) == false) {
+                    if (DeplacementPossible(x, y, x, y + 1) == false) {
+                        return true;
+                    }
+                }
+            }
+        }
+        // Conne 1 
+        if (y == 0) {
+            if (x == 1 || x == 2 || x == 3) {
+                if (DeplacementPossible(x, y, x - 1, y) == false) {
+                    if (DeplacementPossible(x, y, x - 1, y + 1) == false) {
+                        if (DeplacementPossible(x, y, x, y + 1) == false) {
+                            if (DeplacementPossible(x, y, x + 1, y) == false) {
+                                if (DeplacementPossible(x, y, x + 1, y + 1) == false) {
+                                    return true;
+                                }
+                            }
+
+                        }
+                    }
+                }
+
+            }
+        }
+
+        // angle en bas a gauche
+        if (x == 4 && y == 0) {
+            if (DeplacementPossible(x, y, x - 1, y) == false) {
+                if (DeplacementPossible(x, y, x - 1, y + 1) == false) {
+                    if (DeplacementPossible(x, y, x, y + 1) == false) {
+                        return true;
+                    }
+                }
+            }
+        }
+        // Ligne 1 
+        if (x == 0) {
+            if (y == 1 || y == 2 || y == 3) {
+                if (DeplacementPossible(x, y, x, y - 1) == false) {
+                    if (DeplacementPossible(x, y, x + 1, y - 1) == false) {
+                        if (DeplacementPossible(x, y, x + 1, y) == false) {
+                            if (DeplacementPossible(x, y, x + 1, y + 1) == false) {
+                                if (DeplacementPossible(x, y, x, y + 1) == false) {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
+        // angle en haut a droite
+        if (x == 0 && y == 4) {
+            if (DeplacementPossible(x, y, x + 1, y) == false) {
+                if (DeplacementPossible(x, y, x + 1, y - 1) == false) {
+                    if (DeplacementPossible(x, y, x + 1, y - 1) == false) {
+                        return true;
+                    }
+                }
+            }
+
+        }
+        // angle en bas a droite
+        if (x == 4 && y == 4) {
+            if (DeplacementPossible(x, y, x - 1, y) == false) {
+                if (DeplacementPossible(x, y, x - 1, y - 1) == false) {
+                    if (DeplacementPossible(x, y, x, y - 1) == false) {
+                        return true;
+                    }
+                }
+            }
+        }
+        // Ligne 4 
+        if (x == 4) {
+            if (y == 1 || y == 2 || y == 3) {
+                if (DeplacementPossible(x, y, x, y - 1) == false) {
+                    if (DeplacementPossible(x, y, x - 1, y - 1) == false) {
+                        if (DeplacementPossible(x, y, x - 1, y) == false) {
+                            if (DeplacementPossible(x, y, x - 1, y + 1) == false) {
+                                if (DeplacementPossible(x, y, x, y + 1) == false) {
+                                    return true;
+                                }
+                            }
+                        }
+
+                    }
+
+                }
+            }
+        }
+        // Conne 4 
+        if (y == 4) {
+            if (x == 1 || x == 2 || x == 3) {
+                if (DeplacementPossible(x, y, x - 1, y) == false) {
+                    if (DeplacementPossible(x, y, x - 1, y - 1) == false) {
+                        if (DeplacementPossible(x, y, x, y - 1) == false) {
+                            if (DeplacementPossible(x, y, x + 1, y - 1) == false) {
+                                if (DeplacementPossible(x, y, x + 1, y + 1) == false) {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+
+                }
+            }
+
+        }
+
+        //Centre 
+        if (y == 1 || y == 2 || y == 3) {
+            if (x == 1 || x == 2 || x == 3) {
+                if (DeplacementPossible(x, y, x + 1, y) == false) {
+                    if (DeplacementPossible(x, y, x, y + 1) == false) {
+                        if (DeplacementPossible(x, y, x + 1, y + 1) == false) {
+                            if (DeplacementPossible(x, y, x - 1, y) == false) {
+                                if (DeplacementPossible(x, y, x, y - 1) == false) {
+                                    if (DeplacementPossible(x, y, x - 1, y - 1) == false) {
+                                        if (DeplacementPossible(x, y, x - 1, y + 1) == false) {
+                                            if (DeplacementPossible(x, y, x + 1, y - 1) == false) {
+                                                return true;
+                                            }
+                                        }
+
+                                    }
+
+                                }
+
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
+        return false;
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 }

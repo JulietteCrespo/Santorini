@@ -158,13 +158,13 @@ public class Partie {
             // il doit construire 
             // if si il peut de rajouter un etage sinon fini
             
-            if (newGrille.possibleDeConstruire(joueurCourant.ouvrierCourant)==false){
+            if (newGrille.possibleDeConstruire(joueurCourant.ouvrierCourant.Xouvrier,joueurCourant.ouvrierCourant.Youvrier)==false){
               System.out.println(joueurCourant.nom + " ou veut tu construire ? ");
               System.out.println(" ligne : ");
               int yT = sc.nextInt() - 1;
               System.out.println(" colonne : ");
               int xT = sc.nextInt() - 1;
-              if (newGrille.AjouterEtagePossible(xT, yT) == true && newGrille.grille[xT][yT].ouvrierCourant==null) {
+              if (newGrille.AjouterEtagePossible(x,y,xT, yT) == true && newGrille.grille[xT][yT].ouvrierCourant==null) {
                 System.out.println(" etage ajouter ");
                 newGrille.grille[xT][yT].etageCourant.niveauEtage++;
                } else {
